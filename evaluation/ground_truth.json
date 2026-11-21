@@ -1,0 +1,150 @@
+{
+  "simulation": "SAP-LIKE SIMULATION - labeled ground truth authored alongside the seeded estate",
+  "notes": [
+    "Truths describe genuine business judgment over the synthetic estate:",
+    "pricing changes corrupt amounts end-to-end (order->billing->invoice feed->reconciliation),",
+    "but do NOT touch logistics (delivery), manual GL posting, or payment clearing fields.",
+    "Risk bands follow the published weighted scorer in backend/app/tools/sap_tools.py."
+  ],
+  "transports": [
+    {
+      "key": "PRICING_CANONICAL",
+      "critical_truth": true,
+      "transport": {
+        "transport_id": "SIMK910001",
+        "title": "Pricing condition ZPR0 recalculation + pricing exit update",
+        "kind": "CUSTOMIZING",
+        "change_type": "PRICING_CHANGE",
+        "scenario_tag": "PRICING_CANONICAL",
+        "target_release": "REL-2026.09",
+        "loc_delta": 160,
+        "objects": [
+          {"object_type": "CONFIG_ITEM", "object_key": "PRICING_COND_TYPE_ZPR0", "change_action": "MODIFY", "value_affecting": true,
+           "details": {"category": "PRICING", "note": "condition record recalculation rules"}},
+          {"object_type": "CUSTOM_CODE", "object_key": "Z_PRICING_DETERMINATION_EXIT", "change_action": "MODIFY", "value_affecting": true,
+           "details": {"note": "exit logic adjusted for new condition sequence"}}
+        ]
+      },
+      "expected": {
+        "processes": ["ORDER_TO_CASH", "RECORD_TO_REPORT"],
+        "interfaces": ["INVOIC_OUT"],
+        "tests": ["BILLING_CREATE_TEST", "INVOIC_PAYLOAD_TEST", "FI_RECONCILIATION_TEST", "SO_CREATE_TEST"],
+        "risk_band": "HIGH"
+      }
+    },
+    {
+      "key": "MM_STOCK_CLEAN",
+      "critical_truth": false,
+      "transport": {
+        "transport_id": "SIMK910002",
+        "title": "Minor stock sync report adjustment",
+        "kind": "WORKBENCH",
+        "change_type": "ABAP_CHANGE",
+        "scenario_tag": "",
+        "loc_delta": 12,
+        "objects": [
+          {"object_type": "CUSTOM_CODE", "object_key": "Z_MM_STOCK_SYNC_REPORT", "change_action": "MODIFY", "value_affecting": true,
+           "details": {"note": "logging statement added"}}
+        ]
+      },
+      "expected": {
+        "processes": ["INVENTORY_MANAGEMENT"],
+        "interfaces": [],
+        "tests": ["STOCK_SYNC_TEST"],
+        "risk_band": "LOW"
+      }
+    },
+    {
+      "key": "PO_RELEASE_CONFIG",
+      "critical_truth": false,
+      "transport": {
+        "transport_id": "SIMK910003",
+        "title": "PO release strategy thresholds + release workflow change",
+        "kind": "WORKBENCH",
+        "change_type": "WORKFLOW_CHANGE",
+        "scenario_tag": "",
+        "loc_delta": 210,
+        "objects": [
+          {"object_type": "CONFIG_ITEM", "object_key": "PO_RELEASE_STRATEGY", "change_action": "MODIFY", "value_affecting": false,
+           "details": {"note": "release threshold raised"}},
+          {"object_type": "CUSTOM_CODE", "object_key": "Z_PO_RELEASE_WORKFLOW", "change_action": "MODIFY", "value_affecting": true,
+           "details": {"note": "workflow step logic updated"}}
+        ]
+      },
+      "expected": {
+        "processes": ["PROCURE_TO_PAY"],
+        "interfaces": ["ORDERS_OUT"],
+        "tests": ["ORDERS_PAYLOAD_TEST", "PO_APPROVE_TEST"],
+        "risk_band": "HIGH"
+      }
+    },
+    {
+      "key": "FX_REVALUATION",
+      "critical_truth": false,
+      "transport": {
+        "transport_id": "SIMK910004",
+        "title": "FX valuation method switch + valuation report change",
+        "kind": "CUSTOMIZING",
+        "change_type": "CONFIG_CHANGE",
+        "scenario_tag": "",
+        "loc_delta": 180,
+        "objects": [
+          {"object_type": "CONFIG_ITEM", "object_key": "FX_VALUATION_METHOD", "change_action": "MODIFY", "value_affecting": true,
+           "details": {"category": "VALUATION"}},
+          {"object_type": "CUSTOM_CODE", "object_key": "Z_FX_REVALUATION_REPORT", "change_action": "MODIFY", "value_affecting": true,
+           "details": {"note": "valuation posting logic"}}
+        ]
+      },
+      "expected": {
+        "processes": ["RECORD_TO_REPORT"],
+        "interfaces": [],
+        "tests": ["FI_RECONCILIATION_TEST", "FX_REVALUATION_TEST"],
+        "risk_band": "MEDIUM"
+      }
+    },
+    {
+      "key": "ROLE_PAYROLL_DISPLAY",
+      "critical_truth": false,
+      "transport": {
+        "transport_id": "SIMK910005",
+        "title": "Payroll display role profile refresh",
+        "kind": "CUSTOMIZING",
+        "change_type": "ROLE_CHANGE",
+        "scenario_tag": "",
+        "loc_delta": 0,
+        "objects": [
+          {"object_type": "ROLE", "object_key": "ROLE_PAYROLL_CLERK", "change_action": "MODIFY", "value_affecting": false,
+           "details": {"note": "display-only authorization realignment"}}
+        ]
+      },
+      "expected": {
+        "processes": ["HIRE_TO_RETIRE"],
+        "interfaces": [],
+        "tests": ["PAYROLL_DRYRUN_TEST"],
+        "risk_band": "LOW"
+      }
+    },
+    {
+      "key": "ODATA_SO_API",
+      "critical_truth": false,
+      "transport": {
+        "transport_id": "SIMK910006",
+        "title": "Expose new field on API_SALES_ORDER_SRV",
+        "kind": "WORKBENCH",
+        "change_type": "ODATA_CHANGE",
+        "scenario_tag": "",
+        "loc_delta": 40,
+        "objects": [
+          {"object_type": "ODATA_SPEC", "object_key": "API_SALES_ORDER_SRV", "change_action": "MODIFY", "value_affecting": false,
+           "details": {"note": "new exposure field on order API"}}
+        ]
+      },
+      "expected": {
+        "processes": ["ORDER_TO_CASH"],
+        "interfaces": ["API_SALES_ORDER_SRV"],
+        "tests": ["SO_API_CONTRACT_TEST", "SO_CREATE_TEST"],
+        "risk_band": "MEDIUM"
+      }
+    }
+  ]
+}

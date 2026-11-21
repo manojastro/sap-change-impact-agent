@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+pydantic>=2
+pydantic-settings
+sqlalchemy>=2
+httpx
+prometheus-client
+networkx
+pytest
+psycopg[binary]

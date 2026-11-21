@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    image: sap-change-impact-agent:latest
+    container_name: sap-change-impact-agent
+    ports:
+      - "8013:8013"
+    volumes:
+      # keeps the SQLite database (and any snapshots) outside the image layer
+      - ./data:/app/data
+    environment:
+      APP_ENVIRONMENT: local
+      DATABASE_URL: sqlite:////app/data/sap_change_impact.db
+      LLM_MODE: mock            # set "openai-compatible" + LLM_BASE_URL/KEY/MODEL for a real LLM
+      CORS_ORIGINS: "http://localhost:8013,http://127.0.0.1:8013"
+      LOG_LEVEL: INFO
+    restart: unless-stopped

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAP Change Impact Cockpit</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">CI</div>
+    <div>
+      <h1>SAP Change Impact &amp; Regression Risk Agent</h1>
+      <span id="meta-subtitle" class="subtitle">release-management cockpit</span>
+    </div>
+  </div>
+  <div class="top-actions">
+    <span id="mock-badge" class="mock-badge hidden">MOCK MODE</span>
+    <button id="btn-seed" class="btn ghost">Seed Estate</button>
+    <button id="btn-refresh" class="btn ghost">Refresh</button>
+  </div>
+</header>
+
+<main class="grid">
+
+  <!-- Landscape overview -->
+  <section class="panel span-4" id="panel-landscape">
+    <h2>SAP Landscape Overview</h2>
+    <p class="panel-hint">Business processes of the simulated estate; amber = inside current impact radius.</p>
+    <div id="landscape-cards" class="cards"><div class="empty">Load a seed to populate.</div></div>
+    <dl id="estate-stats" class="stats"></dl>
+  </section>
+
+  <!-- Transport queue -->
+  <section class="panel span-5" id="panel-transports">
+    <h2>Transport Queue</h2>
+    <table class="tbl" id="transport-table">
+      <thead><tr><th>Transport</th><th>Title</th><th>Type</th><th>Size</th><th>Status</th><th>Risk</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- Approval status -->
+  <section class="panel span-3" id="panel-approval">
+    <h2>Approval Status</h2>
+    <div id="approval-box"><div class="empty">No approval pending.</div></div>
+  </section>
+
+  <!-- Changed objects -->
+  <section class="panel span-4" id="panel-objects">
+    <h2>Changed Objects</h2>
+    <p class="panel-hint" id="objects-subtitle">Select a transport above.</p>
+    <ul id="changed-objects" class="obj-list"><li class="empty">No transport selected.</li></ul>
+    <div class="actions">
+      <button id="btn-analyze" class="btn primary" disabled>Start Analysis</button>
+      <button id="btn-validate" class="btn primary" disabled disabled-title="Requires approved transport">Run Release Validation</button>
+    </div>
+  </section>
+
+  <!-- Analysis pipeline -->
+  <section class="panel span-4" id="panel-pipeline">
+    <h2>Agentic Analysis Pipeline</h2>
+    <ol id="stage-list" class="stages"><li class="empty">Idle.</li></ol>
+  </section>
+
+  <!-- Risk -->
+  <section class="panel span-4" id="panel-risk">
+    <h2>Risk Score</h2>
+    <div id="risk-gauge" class="gauge-wrap"><div class="empty">No risk assessment yet.</div></div>
+    <div id="risk-factors"></div>
+  </section>
+
+  <!-- Process impact heat -->
+  <section class="panel span-4" id="panel-processes">
+    <h2>Business Process Impact</h2>
+    <ul id="process-impact" class="heat-list"><li class="empty">Run an analysis.</li></ul>
+  </section>
+
+  <!-- Interfaces -->
+  <section class="panel span-4" id="panel-interfaces">
+    <h2>Affected Interfaces</h2>
+    <ul id="interface-list" class="plain-list"><li class="empty">Run an analysis.</li></ul>
+  </section>
+
+  <!-- Regression scope -->
+  <section class="panel span-6" id="panel-scope">
+    <h2>Regression Scope <span id="scope-ratio" class="pill"></span></h2>
+    <table class="tbl" id="scope-table">
+      <thead><tr><th>#</th><th>Test</th><th>Score</th><th>Reason</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p id="scope-excluded" class="panel-footnote"></p>
+  </section>
+
+  <!-- Dependency graph -->
+  <section class="panel span-6" id="panel-graph">
+    <h2>Dependency Graph</h2>
+    <div class="graph-scroll"><svg id="depgraph" width="100%" height="360" role="img" aria-label="layered dependency graph"></svg></div>
+    <div class="legend">
+      <span><i class="dot d-process"></i>Process</span>
+      <span><i class="dot d-step"></i>Step</span>
+      <span><i class="dot d-tx"></i>Transaction</span>
+      <span><i class="dot d-artifact"></i>Table / Code / Config / Job</span>
+      <span><i class="dot d-iface"></i>Interface</span>
+      <span><i class="dot impacted"></i>Impacted</span>
+    </div>
+  </section>
+
+  <!-- Test execution results -->
+  <section class="panel span-6" id="panel-execution">
+    <h2>Test Execution Results</h2>
+    <table class="tbl" id="execution-table">
+      <thead><tr><th>Test</th><th>Criticality</th><th>Result</th><th>Note</th></tr></thead>
+      <tbody><tr><td colspan="4" class="empty">No validation run yet.</td></tr></tbody>
+    </table>
+  </section>
+
+  <!-- Confidence trend -->
+  <section class="panel span-6" id="panel-confidence">
+    <h2>Release Confidence Trend</h2>
+    <div id="confidence-view"><div class="empty">No validations yet.</div></div>
+  </section>
+
+</main>
+
+<footer class="footnote">
+  SAP-LIKE SIMULATION - synthetic estate, deterministic validation, no real SAP system or license.
+  <span id="poll-state"></span>
+</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
